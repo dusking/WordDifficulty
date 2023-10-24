@@ -1,0 +1,4 @@
+__pycache__
+srt/
+*.srt
+.DS_Store
