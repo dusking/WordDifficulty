@@ -1,4 +1,5 @@
 __pycache__
 srt/
+*/srt/
 *.srt
 .DS_Store
