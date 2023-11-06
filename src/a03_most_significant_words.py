@@ -5,6 +5,7 @@ import nltk
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from opensubtitlescom import OpenSubtitles
+from scipy.sparse import csr_matrix
 
 from contractions import contractions_dict
 
@@ -25,6 +26,7 @@ class MostSignificantWords:
         self.opensubtitles = OpenSubtitles(SUBTITLES_COM_API_KEY, f"{SUBTITLES_COM_APP_NAME} v1.0.0")
         self.opensubtitles.login(SUBTITLES_COM_USERNAME, SUBTITLES_COM_PASSWORD)
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
+        self.names = set(nltk.corpus.names.words())
 
     def download_corpora(self):
         """Download essential NLTK corpora for natural language processing tasks.
@@ -57,7 +59,7 @@ class MostSignificantWords:
             transcripts.append({"title": title, "transcript": transcript})
         return self.evaluate_most_important_words(transcripts)
 
-    def get_cleaned_transcript(self, title, year=None, season_number=None, episode_number=None) -> str:
+    def get_cleaned_transcript(self, title, year=None, season_number=None, episode_number=None, **kwargs) -> str:
         """Clean and preprocess the transcript for a given title and episode.
 
         Args:
@@ -125,10 +127,12 @@ class MostSignificantWords:
             stemmer = PorterStemmer()
             base_form_stemmed_words = []
             for word in words:
-                word = stemmer.stem(word)  # handle steamid words like "he's"
+                if word in self.names:
+                    base_form_stemmed_words.append(word)
                 if "'" in word:
                     # skip words like I'm - since they will be break into I and 'm
                     continue
+                word = stemmer.stem(word)  # reduce words to their base or root form
                 base_form_stemmed_words.append(word)
             return base_form_stemmed_words
 
@@ -159,3 +163,59 @@ class MostSignificantWords:
             important_words_per_film.append({"film": film_name, "words": important_words_str})
 
         return important_words_per_film
+
+    def get_tfidf_matrix_for_features(self, features) -> csr_matrix:
+        """Get the TF-IDF matrix for the given features.
+
+        Args:
+            features (list): List of feature dictionaries.
+
+        Returns:
+            list: The tfidf_matrix for the movie transcripts.
+        """
+        transcripts = []
+        for feature in features:
+            title = feature["title"]
+            if "season_number" in feature:
+                title += f"_s{feature['season_number']}_e{feature['episode_number']}"
+            transcript = self.get_cleaned_transcript(**feature)
+            transcripts.append({"title": title, "transcript": transcript})
+        return self.get_tfidf_matrix(transcripts)
+
+    def get_tfidf_matrix(self, movie_transcripts) -> csr_matrix:
+        """Evaluate the most important words using TF-IDF for a list of movie transcripts.
+
+        Args:
+           movie_transcripts (list): List of movie transcripts with titles.
+
+        Returns:
+           list: The tfidf_matrix for the movie transcripts.
+        """
+        def custom_tokenizer(text):
+            words = nltk.word_tokenize(text)
+
+            # Apply stemming
+            stemmer = PorterStemmer()
+            base_form_stemmed_words = []
+            for word in words:
+
+                word = stemmer.stem(word)  # reduce words to their base or root form
+                if "'" in word:
+                    # skip words like I'm - since they will be break into I and 'm
+                    continue
+                base_form_stemmed_words.append(word)
+            return base_form_stemmed_words
+
+        # 1. Tokenize the movies transcripts
+        tokens_vec = []
+        for movie_transcript in movie_transcripts:
+            tokens = nltk.word_tokenize(movie_transcript["transcript"])
+            tokens_vec.append(" ".join(tokens))
+
+        # 2. Create a TF-IDF vectorizer
+        tfidf_vectorizer = TfidfVectorizer(tokenizer=custom_tokenizer)
+
+        # 3. Fit and transform the transcript
+        tfidf_matrix = tfidf_vectorizer.fit_transform(tokens_vec)
+
+        return tfidf_matrix
