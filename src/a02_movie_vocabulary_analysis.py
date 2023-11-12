@@ -6,7 +6,7 @@ from collections import Counter
 import pandas as pd
 from opensubtitlescom import OpenSubtitles
 
-from word_difficulty import WordDifficulty
+from a01_word_difficulty import WordDifficulty
 
 SUBTITLES_COM_APP_NAME = os.environ.get("SUBTITLES_COM_APP_NAME")
 SUBTITLES_COM_API_KEY = os.environ.get("SUBTITLES_COM_API_KEY")
