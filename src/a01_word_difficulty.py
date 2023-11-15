@@ -23,13 +23,23 @@ class WordDifficulty:
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.words = set(nltk.corpus.words.words())
         self.names = set(nltk.corpus.names.words())
+
+        all_synsets = list(nltk.corpus.wordnet.all_synsets())
+        all_wordnet_words = []
+        for synset in all_synsets:
+            all_wordnet_words.extend(synset.lemma_names())
+
         self.word_freq = {
+            "words": FreqDist(nltk.corpus.words.words()),
+            "wordnet_words": FreqDist(all_wordnet_words),
+
             "movie_reviews": FreqDist(nltk.corpus.movie_reviews.words()),
             "reuters": FreqDist(nltk.corpus.reuters.words()),
             "brown": FreqDist(nltk.corpus.brown.words()),
             "gutenberg": FreqDist(nltk.corpus.gutenberg.words()),
             "webtext": FreqDist(nltk.corpus.webtext.words()),
             "nps_chat": FreqDist(nltk.corpus.nps_chat.words()),
+            "inaugural": FreqDist(nltk.corpus.inaugural.words()),
         }
         self.lemmatizer = WordNetLemmatizer()
 
@@ -45,6 +55,7 @@ class WordDifficulty:
         - 'names': A list of names.
         - 'webtext': Web text corpus, a collection of text from web pages.
         - 'nps_chat': Chat logs from the NPS Chat corpus.
+        - 'inaugural': Inaugural addresses of U.S. presidents
 
         Usage:
         download_corpora()
@@ -57,6 +68,7 @@ class WordDifficulty:
         nltk.download('names')
         nltk.download('webtext')
         nltk.download('nps_chat')
+        nltk.download('inaugural')
 
     def evaluate_word_difficulty(self, word):
         """Estimate the difficulty level of a word.

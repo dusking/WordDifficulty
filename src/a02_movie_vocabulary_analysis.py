@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 from collections import Counter
 
+import nltk
 import pandas as pd
 from opensubtitlescom import OpenSubtitles
 
@@ -32,6 +33,7 @@ class MovieVocabularyAnalysis:
         """
         self.srt_folder = Path("srt")
         self.word_difficulty = WordDifficulty()
+        self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.opensubtitles = OpenSubtitles(SUBTITLES_COM_API_KEY, f"{SUBTITLES_COM_APP_NAME} v1.0.0")
         self.opensubtitles.login(SUBTITLES_COM_USERNAME, SUBTITLES_COM_PASSWORD)
 
@@ -111,6 +113,16 @@ class MovieVocabularyAnalysis:
 
         return df
 
+    def is_valid_word(self, word):
+        word = word.strip().lower()
+        if word in self.stopwords:
+            return False
+        if not word.isalpha():
+            return False
+        if len(word) < 3:
+            return False
+        return True
+
     def extract_words_from_line(self, line) -> list:
         """Extract words from a subtitle line.
 
@@ -127,7 +139,7 @@ class MovieVocabularyAnalysis:
         clean_text = re.sub(r'[^a-zA-Z]', ' ', line)
 
         # Extract word
-        return [w.strip().lower() for w in clean_text.split()]
+        return [w.strip().lower() for w in clean_text.split() if self.is_valid_word(w)]
 
     def summarize_words_classification(self, df) -> dict:
         """Summarize word classification statistics based on their counts.
