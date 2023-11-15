@@ -28,6 +28,7 @@ class WordDifficulty:
         all_wordnet_words = []
         for synset in all_synsets:
             all_wordnet_words.extend(synset.lemma_names())
+        self.wordnet_words = set(all_wordnet_words)
 
         self.word_freq = {
             "words": FreqDist(nltk.corpus.words.words()),

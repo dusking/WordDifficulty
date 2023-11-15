@@ -13,7 +13,8 @@ easy_words = ['Diamond', 'Queen', 'Football', 'Kite', 'Laugh', 'Nectar', 'Flower
               'Lollipop', 'Mouse', 'Unveil', 'Lighthouse', 'Grass', 'Star', 'Giggle', 'X-ray', 'Sandwich', 'Delight',
               'Cute', 'Rain', 'Jacket', 'Quiet', 'Telescope', 'rich', 'Lemonade', 'Monkey', 'Egg', 'Ice', 'Train',
               'Anchor', 'Duck', 'Apple', 'Alligator', 'Igloo', 'Breeze', 'Green', 'Cherry', "funny", "legs", "house",
-              "tomorrow", "date", "meeting", "delicious", "food", "well", "organized", "hungry", "hate", "blue"]
+              "tomorrow", "date", "meeting", "delicious", "food", "well", "organized", "hungry", "hate", "blue",
+              "lol", "boo"]
 
 difficult_words = ['Prejudices', 'Plummeting', 'Inundated', 'Influx', 'remedy', 'Proliferation', 'Evident',
                    'Skim', 'Serene', 'parsimonious', 'Enfant', 'Abruptly', 'strobe', 'awestruck',
@@ -26,7 +27,7 @@ difficult_words = ['Prejudices', 'Plummeting', 'Inundated', 'Influx', 'remedy', 
                    'delineated', 'Novelty', 'shindig', 'abundance', 'harness', 'wring', 'Hone', 'debut',
                    'ratified', 'Incandescent', 'Forth', 'Practices', 'Conveying', 'Fluctuation',
                    'amend', 'cavorting', 'Assertion', 'gown', 'reckoned', 'predominant', 'rod', 'vengeance',
-                   'assuage', 'plums', 'awe', 'retractable', 'grimy', 'indulge', 'abruptly', 'esteemed', 'fissure',
+                       'assuage', 'plums', 'awe', 'retractable', 'grimy', 'indulge', 'abruptly', 'esteemed', 'fissure',
                    'regaling', 'Scrutiny', 'suitors', 'innate', 'vanity', 'sinister', 'Plains', 'pursuits',
                    'embellished', 'rendezvous', 'Owing', 'horrid', 'ratcheted', 'Venturing', 'backfill', 'tinker',
                    'Counterparts', 'shears', 'Stimulus', 'Abrupt', 'professed', 'gory', 'Deteriorating', 'cultivating',
